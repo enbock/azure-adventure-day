@@ -5,7 +5,7 @@ const RandomStrategy = require('../strategies/random.strategy');
 class PickStrategyFactory {
 
     constructor() {
-        this._defaultStrategy = 'random';
+        this._defaultStrategy = RPSLSStrategies.PAPER;
     }
 
     getStrategy() {

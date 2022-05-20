@@ -14,31 +14,33 @@ spec:
       name: blackboxgameengine
       targetPort: 80
       protocol: TCP
-    - port: 81
-      name: istio-proxy
-      targetPort: 81
-      protocol: TCP    
+#    - port: 81
+#      name: istio-proxy
+#      targetPort: 81
+#      protocol: TCP    
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: default-reader
-  namespace: default
-subjects:
-- kind: Group
-  name: system:serviceaccounts
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
----
+#apiVersion: rbac.authorization.k8s.io/v1
+#kind: ClusterRoleBinding
+#metadata:
+#  name: default-reader
+#  namespace: default
+#subjects:
+#- kind: Group
+#  name: system:serviceaccounts
+##  name: system:authenticated
+#  apiGroup: rbac.authorization.k8s.io
+#roleRef:
+#  kind: ClusterRole
+#  name: cluster-admin
+##  name: secret-reader
+#  apiGroup: rbac.authorization.k8s.io
+#---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blackboxgameengine
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       name: blackboxgameengine      
@@ -61,9 +63,14 @@ spec:
           - containerPort: 80
             name: gameengine
             protocol: TCP
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
         env: 
           - name: "ConnectionStrings__GameEngineDB"
-            value: "Server=tcp:game-sqlserver.windows.net,1433;Initial Catalog=gamedb;Persist Security Info=False;User ID=gamedbadministrator;Password=herebepassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+            value: "Server=tcp:game-sqlserver-4e0af4.database.windows.net,1433;Initial Catalog=gamedb;Persist Security Info=False;User ID=gamedbadministrator;Password=Vv422xk64a9o8CLN;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
           - name: "ARCADE_BACKENDURL"
             value: "http://gamebot/pick"
 #          - name: "APPINSIGHTS_INSTRUMENTATIONKEY"
@@ -81,7 +88,7 @@ spec:
         env: 
           - name: "ASPNETCORE_URLS"
             value: "http://*:81"
-      volumes:
-      - name: config-volume
-        hostPath:
-          path: /etc/kubernetes/
+#      volumes:
+#      - name: config-volume
+#        hostPath:
+#          path: /etc/kubernetes/
